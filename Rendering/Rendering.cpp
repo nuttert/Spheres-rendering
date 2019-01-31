@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <iostream>
 #include <unistd.h>
+#include <optional>
 #include "Errors/Errors.hpp"
 using Render = Graphic::Render;
 using Vec3f = Graphic::Vec3f;
@@ -51,6 +52,11 @@ auto Vec3f::operator+(const Vec3f& rhs)const{
 auto Vec3f::operator/(const float& number)const{
     return Vec3f{x/number,y/number,z/number};
 }
+
+auto Vec3f::operator*(const float& number)const{
+    return Vec3f{x*number,y*number,z*number};
+}
+
 auto Vec3f::norm()const{
     return sqrt(x*x+y*y+z*z);
 }
@@ -62,6 +68,10 @@ auto Vec3f::normSqure()const{
 auto Vec3f::normilizedVec()const{
     return *this/norm();
 }
+
+auto Vec3f::operator-()const{
+    return Vec3f{-x,-y,-z};
+}
 //_______________________
 
 
@@ -72,8 +82,19 @@ auto Sphere::interactionWithSphere(const Vec3f& direction,const Vec3f& origin)co
     auto currentCos = std::abs((direction*fromOriginToCenter))/(distance*direction.norm());
     auto minSin = radius/distance;
     auto minCos = sqrt(1-minSin*minSin);
-    struct Result{const float distance;const bool isInteraction;};
-    return Result{distance,currentCos >= minCos};
+    auto distanceFromOriginToInterectionPoint = cosTheorem(distance, radius, currentCos);
+    auto interactionPoint = direction.normilizedVec()*distanceFromOriginToInterectionPoint;
+    auto normal = (fromOriginToCenter+interactionPoint).normilizedVec();
+    struct Result{
+        const Vec3f normal;
+        const Vec3f interactionPoint;
+        const float distance;
+        const bool isInteraction;};
+    return Result{
+        std::move(normal),
+        std::move(interactionPoint),
+        std::move(distance),
+        currentCos >= minCos};
 }
 //_______________________
 
@@ -86,28 +107,39 @@ pixels(height,Vector(width)),
 width(width),
 height(height){}
 
-auto Render::colorForArea(const Spheres& spheres,const Vec3f& direction,const Vec3f& origin){
+auto Render::colorForArea(const Spheres& spheres,const Vec3f& direction,
+                          const Vec3f& origin,Lightings lightings){
     auto nearlyDistance = std::numeric_limits<float>::max();
-    const Material* material = nullptr;
+    const Material* pMaterial = nullptr;
+    std::optional<Vec3f> point;
+    std::optional<Vec3f> normal;
     for(const auto& sphere:spheres){
-        auto [distance,isInteraction] = sphere.interactionWithSphere(direction, origin);
+        auto [normalToPoint,interactionPoint,distance,isInteraction] = sphere.interactionWithSphere(direction, origin);
         if(isInteraction &&
            distance < nearlyDistance){
             nearlyDistance = distance;
-            material = &sphere.material;
+            pMaterial = &sphere.material;
+            point = std::move(interactionPoint);
+            normal = std::move(normalToPoint);
         }
     }
-    return   material ? material->color : Colors::background;
+    
+    float lightIntensity = 0;
+    for(const auto& light:lightings)
+        if(point && normal){
+            auto lightDirection = (light.position-*point).normilizedVec();
+            lightIntensity += light.intensity*std::max(0.f,lightDirection * (*normal));
+        }
+    return   pMaterial ? pMaterial->color*lightIntensity : Colors::background;
 }
 
-void  Graphic::Render::defaultFill(const Spheres& spheres){
+void  Graphic::Render::defaultFill(const Spheres& spheres,Lightings lightings,const Vec3f& origin){
     for(size_t i = 0;i<height;++i)
         for(size_t j = 0;j<width;++j){
-            auto origin = Vec3f{0,0,0};
             float x =  (2*(j + 0.5)/(float)width  - 1)*(float)width/height;
             float y = -(2*(i + 0.5)/(float)height  - 1);
             auto direction = Vec3f{x, y, -1}.normilizedVec();
-            pixels[i][j] = colorForArea(spheres, direction, origin);
+            pixels[i][j] = colorForArea(spheres, direction, origin,lightings);
         }
 }
 

@@ -12,6 +12,8 @@
 #include "Rendering.hpp"
 using namespace Graphic;
 using Sphere = Graphic::Geometry::Sphere;
+using Lightings = Sphere::Lightings;
+using Light = Geometry::Light;
 const Vec3f Colors::background{(float)254/255, (float)156/255, (float)143/255};
 const Vec3f Colors::redRubber{0.3, 0.1, 0.1};
 const Vec3f Colors::orange{(float)254/255, (float)74/255, (float)73/255};
@@ -29,7 +31,11 @@ int main(int argc, const char * argv[]) {
     spheres.push_back(Sphere(Vec3f(-1.0, -1.5, -12), 2, Material{Colors::blue}));
     spheres.push_back(Sphere(Vec3f( 1.5, -0.5, -18), 3, Material{Colors::yellow}));
     spheres.push_back(Sphere(Vec3f( 7,    5,   -18), 4, Material{Colors::orange}));
-    engine.defaultFill(spheres);
+    
+    Lightings  lights;
+    lights.push_back(Light(Vec3f(-20, 20,  20), 1.5));
+    auto origin = Vec3f{0.f,0.f,5.f};
+    engine.defaultFill(spheres,lights,origin);
     engine.createFile("myFile");
     std::cout << "Hello, World!\n";
     return 0;
