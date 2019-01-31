@@ -17,6 +17,9 @@ using Render = Graphic::Render;
 using Vec3f = Graphic::Vec3f;
 using Geometry = Graphic::Geometry;
 using Sphere = Geometry::Sphere;
+
+
+
 //Vector
 auto Vec3f:: operator[](const short index)const{
     assert(index<3);
@@ -62,6 +65,17 @@ auto Vec3f::normilizedVec()const{
 //_______________________
 
 
+//Geometry
+auto Sphere::interactionWithSphere(const Vec3f& direction,const Vec3f& origin)const{
+    auto fromOriginToCenter = origin-center;
+    auto distance = fromOriginToCenter.norm();
+    auto currentCos = std::abs((direction*fromOriginToCenter))/(distance*direction.norm());
+    auto minSin = radius/distance;
+    auto minCos = sqrt(1-minSin*minSin);
+    struct Result{const float distance;const bool isInteraction;};
+    return Result{distance,currentCos >= minCos};
+}
+//_______________________
 
 
 
@@ -72,22 +86,31 @@ pixels(height,Vector(width)),
 width(width),
 height(height){}
 
-auto Render::colorForArea(const Sphere& sphere,const Vec3f& direction,const Vec3f& origin){
-    if(sphere.interactionWithSphere(direction, origin))
-        return Vec3f{0.4, 0.4, 0.3};
-    return Vec3f{0.2, 0.7, 0.8};
+auto Render::colorForArea(const Spheres& spheres,const Vec3f& direction,const Vec3f& origin){
+    auto nearlyDistance = std::numeric_limits<float>::max();
+    const Material* material = nullptr;
+    for(const auto& sphere:spheres){
+        auto [distance,isInteraction] = sphere.interactionWithSphere(direction, origin);
+        if(isInteraction &&
+           distance < nearlyDistance){
+            nearlyDistance = distance;
+            material = &sphere.material;
+        }
+    }
+    return   material ? material->color : Colors::background;
 }
 
-void  Graphic::Render::defaultFill(const Sphere& sphere){
+void  Graphic::Render::defaultFill(const Spheres& spheres){
     for(size_t i = 0;i<height;++i)
         for(size_t j = 0;j<width;++j){
             auto origin = Vec3f{0,0,0};
             float x =  (2*(j + 0.5)/(float)width  - 1)*(float)width/height;
             float y = -(2*(i + 0.5)/(float)height  - 1);
             auto direction = Vec3f{x, y, -1}.normilizedVec();
-            pixels[i][j] = colorForArea(sphere, direction, origin);
+            pixels[i][j] = colorForArea(spheres, direction, origin);
         }
 }
+
 
 void  Render::createFile(const std::string& name){
     std::ofstream file;
@@ -96,6 +119,7 @@ void  Render::createFile(const std::string& name){
         fileError(fileNotExists);
         return;
     }
+    
     file << "P6\n"<< width << " "<< height << "\n"<<pallete<<"\n";
     for(size_t i = 0;i<height;++i)
         for(size_t j = 0;j<width;++j)
@@ -129,15 +153,6 @@ void  Utilities::openFile(std::string file){
 
 
 
-//Geometry
-bool Sphere::interactionWithSphere(const Vec3f& direction,const Vec3f& origin)const{
-    auto fromOriginToCenter = origin-center;
-    auto distance = fromOriginToCenter.norm();
-    auto currentCos = std::abs((direction*fromOriginToCenter))/(distance*direction.norm());
-    auto minSin = radius/distance;
-    auto minCos = sqrt(1-minSin*minSin);
-    return currentCos < minCos;
-}
-//_______________________
+
 
 

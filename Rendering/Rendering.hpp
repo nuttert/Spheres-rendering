@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <vector>
 #include <cmath>
+
+
 namespace Utilities {
     void openFile(std::string file);
 }
@@ -19,7 +21,7 @@ namespace Utilities {
 
 
 namespace Graphic{
-    
+    class Render;
     struct Vec3f{
         float x,y,z;
         Vec3f(float x,float y,float z):x(x),y(y),z(z){}
@@ -45,6 +47,8 @@ namespace Graphic{
     public:
         struct Sphere{
             friend Geometry;
+            friend Render;
+            using Spheres = std::vector<Sphere>;
         private:
             Vec3f center;
             float radius;
@@ -60,7 +64,7 @@ namespace Graphic{
             radius(radious),
             material(material){}
             
-            bool interactionWithSphere(const Vec3f& direction,const Vec3f& origin)const;
+            auto interactionWithSphere(const Vec3f& direction,const Vec3f& origin)const;
         };
         
 
@@ -72,15 +76,16 @@ namespace Graphic{
         using Vector = std::vector<Vec3f>;
         using Matrix = std::vector<Vector>;
         using Sphere = Geometry::Sphere;
+        using Spheres = std::vector<Sphere>;
         const size_t pallete = 255;
         const uint8_t colorDimension = 3;
     public:
         Render(const size_t width,const size_t height);
         
-        void defaultFill(const Sphere& sphere);
+        void defaultFill(const Spheres& spheres);
         void createFile(const std::string& name);
     private:
-        auto colorForArea(const Sphere& sphere,const Vec3f& direction,const Vec3f& origin);
+        auto colorForArea(const Spheres& spheres,const Vec3f& direction,const Vec3f& origin);
     private:
         float viewingAngle = M_PI/2;
         Matrix pixels;
@@ -93,6 +98,9 @@ namespace Graphic{
         Colors() = delete;
         static const Vec3f background;
         static const Vec3f redRubber;
+        static const Vec3f orange;
+        static const Vec3f blue;
+        static const Vec3f yellow;
     };
     
 }
