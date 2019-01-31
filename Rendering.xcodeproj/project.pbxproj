@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		F506B2A22201A22000FA8E87 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F506B2A12201A22000FA8E87 /* main.cpp */; };
+		F506B2AA2201A23100FA8E87 /* Rendering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F506B2A82201A23100FA8E87 /* Rendering.cpp */; };
+		F506B2AD220278BD00FA8E87 /* Errors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F506B2AB220278BD00FA8E87 /* Errors.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,10 @@
 /* Begin PBXFileReference section */
 		F506B29E2201A22000FA8E87 /* Rendering */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Rendering; sourceTree = BUILT_PRODUCTS_DIR; };
 		F506B2A12201A22000FA8E87 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		F506B2A82201A23100FA8E87 /* Rendering.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rendering.cpp; sourceTree = "<group>"; };
+		F506B2A92201A23100FA8E87 /* Rendering.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Rendering.hpp; sourceTree = "<group>"; };
+		F506B2AB220278BD00FA8E87 /* Errors.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Errors.cpp; sourceTree = "<group>"; };
+		F506B2AC220278BD00FA8E87 /* Errors.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Errors.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,8 +64,20 @@
 			isa = PBXGroup;
 			children = (
 				F506B2A12201A22000FA8E87 /* main.cpp */,
+				F506B2A92201A23100FA8E87 /* Rendering.hpp */,
+				F506B2A82201A23100FA8E87 /* Rendering.cpp */,
+				F506B2AE220278D200FA8E87 /* Errors */,
 			);
 			path = Rendering;
+			sourceTree = "<group>";
+		};
+		F506B2AE220278D200FA8E87 /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				F506B2AB220278BD00FA8E87 /* Errors.cpp */,
+				F506B2AC220278BD00FA8E87 /* Errors.hpp */,
+			);
+			path = Errors;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,6 +136,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F506B2AD220278BD00FA8E87 /* Errors.cpp in Sources */,
+				F506B2AA2201A23100FA8E87 /* Rendering.cpp in Sources */,
 				F506B2A22201A22000FA8E87 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -131,8 +151,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -190,8 +210,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -239,6 +259,7 @@
 		F506B2A62201A22000FA8E87 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -247,6 +268,7 @@
 		F506B2A72201A22000FA8E87 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
