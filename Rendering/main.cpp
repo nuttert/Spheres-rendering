@@ -34,7 +34,7 @@ int main(int argc, const char * argv[]) {
     
     Lightings  lights;
     lights.push_back(Light(Vec3f(-20, 20,  20), 1.5));
-    auto origin = Vec3f{0.f,0.f,5.f};
+    auto origin = Vec3f{0.f,0.f,4.f};
     engine.defaultFill(spheres,lights,origin);
     engine.createFile("myFile");
     std::cout << "Hello, World!\n";
